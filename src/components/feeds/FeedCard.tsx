@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { JSX } from 'react/jsx-runtime';
 import Image from '@components/Image.tsx';
@@ -38,19 +38,19 @@ function FeedCard({id, userId, title, content, thumbnailUrl, createdDate, nickna
   const myID = authControl.getUserIdFromToken();
   const myuser = myID === userId;
 
-  const [likes, setLikes] = useState<number>(0);
-  const {like, likeCount, setLike} = useLikeQuery(id => `/api/v1/feed/${id}/like`, id, likes, isLiked);
+  // const [likes, setLikes] = useState<number>(0);
+  const {like, /*likeCount,*/ setLike} = useLikeQuery(id => `/api/v1/feed/${id}/like`, id, /*likes*/0, isLiked);
 
   const {data, setReqParams, hideData} = useInfScroll4Widget(`/api/v1/feed/${id}/comment`, 'comments', infScrollRef, dummy, {page: 0});
   const {isAvailableUser, fixedNickname, fixedPositionLevel} = useUserInfo(nickname, positionLevel);
   const isMobile = useWindowSizeStore(state => state.isMobile);
 
-  useEffect(() => {
-    Api.fetch(`/api/v1/feed/${id}/like`)
-      .then(res => res?.text())
-      .then(count => setLikes(isNaN(Number(count)) ? -1 : Number(count)))
-      .catch(() => setLikes(-1));
-  }, [id]);
+  // useEffect(() => {
+  //   Api.fetch(`/api/v1/feed/${id}/like`)
+  //     .then(res => res?.text())
+  //     .then(count => setLikes(isNaN(Number(count)) ? -1 : Number(count)))
+  //     .catch(() => setLikes(-1));
+  // }, [id]);
 
 
   function clickLike() {
@@ -130,9 +130,9 @@ function FeedCard({id, userId, title, content, thumbnailUrl, createdDate, nickna
             <Like enable={like} width={24} height={24}/>
             {!isMobile && (
               <>
-                <span className=''>
-                  {likeCount}
-                </span>
+                {/*<span className=''>*/}
+                {/*  {likeCount}*/}
+                {/*</span>*/}
                 좋아요
               </>
             )}

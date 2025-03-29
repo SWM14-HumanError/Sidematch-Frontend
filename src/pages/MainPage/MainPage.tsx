@@ -31,6 +31,13 @@ import {
 } from '../../dummies/dummyData.ts';
 import RecommendJobs from '@components/jobs/RecommendJobs.tsx';
 
+
+const ENTERPRISE_SIZE = 3;
+const PERSONAL_SIZE = 3;
+const MENTEE_SIZE = 4;
+const FEED_SIZE = 3;
+const MENTOR_SIZE = 3;
+
 // Todo: 컴포넌트 단위로 분리하자
 // Todo: 리스트 API 정리해서 일관하도록 만들기 - tanstack/react-query 사용
 function MainPage() {
@@ -41,7 +48,7 @@ function MainPage() {
   const mentoringPopup = useMentoringPopup(mentorings.mentoringSearchResponses);
 
   useEffect(() => {
-    Api.fetch2Json('/api/v1/mentorings?page=0')
+    Api.fetch2Json(`/api/v1/mentorings?page=0&size=${MENTOR_SIZE}`)
       .then((data) => {
         setMentorings(data);
       }).catch((err) => {
@@ -157,7 +164,7 @@ function MainPage() {
                     <p>멘토가 없습니다</p>
                   </div>
                 ) :
-                mentorings.mentoringSearchResponses.slice(0, 3).map((mentor: IMentoring | null | undefined) => mentor && (
+                mentorings.mentoringSearchResponses.slice(0, MENTOR_SIZE).map((mentor: IMentoring | null | undefined) => mentor && (
                   <MentorCard key={mentor.mentoringId}
                               {...mentor}
                               setLoginDialog={setIsLoginDialogOpen}/>
@@ -208,7 +215,7 @@ function EnterPriseList({setIsLoginDialogOpen}: IDataList) {
   const [projects, setProjects] = useState<IProjectList>(InitProject);
 
   useEffect(() => {
-    Api.fetch2Json('/api/v1/list/team?type=0&page=0')
+    Api.fetch2Json(`/api/v1/list/team?type=0&page=0&size=${ENTERPRISE_SIZE}`)
       .then((data) => setProjects(data))
       .catch((err) => {
         console.error(err);
@@ -224,7 +231,7 @@ function EnterPriseList({setIsLoginDialogOpen}: IDataList) {
               <p>프로젝트가 없습니다</p>
             </div>
           ) :
-          projects.teamSearchResponseList.slice(0, 3).map((project) => project && (
+          projects.teamSearchResponseList.slice(0, ENTERPRISE_SIZE).map((project) => project && (
             <ProjectCard key={project.id} {...project} setLoginDialog={setIsLoginDialogOpen}/>
           ))}
       </div>
@@ -236,7 +243,7 @@ function PersonalList({setIsLoginDialogOpen}: IDataList) {
   const [studies, setStudies] = useState<IProjectList>(InitProject);
 
   useEffect(() => {
-    Api.fetch2Json('/api/v1/list/team?type=1&page=0')
+    Api.fetch2Json(`/api/v1/list/team?type=1&page=0&size=${PERSONAL_SIZE}`)
       .then((data) => setStudies(data))
       .catch((err) => {
         console.error(err);
@@ -252,7 +259,7 @@ function PersonalList({setIsLoginDialogOpen}: IDataList) {
               <p>프로젝트가 없습니다</p>
             </div>
           ) :
-          studies.teamSearchResponseList.slice(0, 3).map((study) => study && (
+          studies.teamSearchResponseList.slice(0, PERSONAL_SIZE).map((study) => study && (
             <ProjectCard key={study.id} {...study} setLoginDialog={setIsLoginDialogOpen}/>
           ))}
       </div>
@@ -265,7 +272,7 @@ function MenteeList({setIsLoginDialogOpen}: IDataList) {
     {userCardResponses: [], size: 0, hasNextSlice: false});
 
   useEffect(() => {
-    Api.fetch2Json('/api/v1/list/user?orderBy=likes&page=0')
+    Api.fetch2Json(`/api/v1/list/user?orderBy=likes&page=0&size=${MENTEE_SIZE}`)
       .then((data) => setUsers(data))
       .catch((err) => {
         console.error(err);
@@ -283,7 +290,7 @@ function MenteeList({setIsLoginDialogOpen}: IDataList) {
               <p>팀원이 없습니다</p>
             </div>
           ) :
-          users.userCardResponses.slice(0, 4).map((mentee: IUser | null | undefined, index: number) => mentee && (
+          users.userCardResponses.slice(0, MENTEE_SIZE).map((mentee: IUser | null | undefined, index: number) => mentee && (
             <UserCard key={index} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
           ))}
       </div>
@@ -296,7 +303,7 @@ function FeedList({setIsLoginDialogOpen}: IDataList) {
     {feedSearchResponses: [], size: 0, hasNextSlice: false});
 
   useEffect(() => {
-    Api.fetch2Json('/api/v1/feeds?page=0')
+    Api.fetch2Json(`/api/v1/feeds?page=0&size=${FEED_SIZE}`)
       .then((data) => {
         setFeeds(data);
       }).catch((err) => {
@@ -315,7 +322,7 @@ function FeedList({setIsLoginDialogOpen}: IDataList) {
               <p>피드가 없습니다</p>
             </div>
           ) :
-          feeds.feedSearchResponses.slice(0, 3).map((feed: IMainFeeds | null | undefined) => feed && (
+          feeds.feedSearchResponses.slice(0, FEED_SIZE).map((feed: IMainFeeds | null | undefined) => feed && (
             <MainFeedCard key={feed.id}
                           {...feed}
                           setLoginDialog={setIsLoginDialogOpen}/>
