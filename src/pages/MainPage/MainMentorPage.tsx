@@ -13,12 +13,13 @@ import useMentoringPopup from '@hooks/useMentoringPopup.ts';
 import useInfScroll from '@hooks/useInfScroll.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
 import {TechTypeOptions} from '@constant/selectOptions.ts';
-import {IMainMentorList, IMentoring, SearchParams} from '@constant/interfaces.ts';
-import {MentorAdapter} from '@constant/InfScrollAdapter.ts';
+import {IMainMentorList, IMentoring, IUser, IUserCardList, SearchParams} from '@constant/interfaces.ts';
+import {MenteeAdapter, MentorAdapter} from '@constant/InfScrollAdapter.ts';
 import authControl from '@constant/authControl.ts';
 
 import '@styles/MainProjectPage.scss';
 import '@styles/MainMentorPage.scss';
+import UserCard from '@components/cards/UserCard.tsx';
 
 const SearchTypeOptions = [
   {option: '제목+내용', value: 'TITLE_AND_CONTENT'},
@@ -28,10 +29,15 @@ const SearchTypeOptions = [
 function MainMentorPage() {
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState<boolean>(false);
   const infScrollLayout = useRef<HTMLDivElement>(null);
+  const infScrollMentorLayout = useRef<HTMLDivElement>(null);
 
   const adapter = useRef(new MentorAdapter());
   const {data, loading, isEnded, isEmpty, setReqParams, hideData}
     = useInfScroll<IMainMentorList, IMentoring>(adapter.current, infScrollLayout);
+
+  const mentorAdapter = useRef(new MenteeAdapter());
+  const {data: mentorData, loading: mentorLoading, isEmpty: mentorIsEmpty}
+    = useInfScroll<IUserCardList, IUser>(mentorAdapter.current, infScrollMentorLayout);
 
   const mentoringPopup = useMentoringPopup(data.list as IMentoring[]);
 
@@ -62,22 +68,61 @@ function MainMentorPage() {
       </div>
 
       <div className='main_layout'>
+        <br/>
+
+        <MentorSearches setReqParams={setReqParams}/>
+
         <div className='project'>
           <div className='header_space_between'>
             <div className='header_layout'>
-              <h2>멘토</h2>
+              <h2>추천 멘토</h2>
               <span>나에게 맞는 멘토를 구해보세요 🔥</span>
             </div>
+            {/*Fixme: Mentor 대시보드 Page URL 로 바꿔주기*/}
             <div className='header_layout'>
               {isLogin && (UserRole === 'MENTOR' || UserRole === 'ADMIN' ? (
-                <Link to='/create/mentoring'>멘토링 만들기</Link>
+                <Link to='/create/mentoring'>대시보드</Link>
               ) : (
                 <Link to='/auth/mentor'>멘토 인증</Link>
               ))}
             </div>
           </div>
 
-          <MentorSearches setReqParams={setReqParams}/>
+          <div className={'card_layout' + (!mentorLoading && mentorIsEmpty ? ' no_contents' : ' user_card_layout')}
+               ref={infScrollMentorLayout}>
+            <div>
+              { !mentorLoading && mentorIsEmpty ? (
+                  <div className='list_no_contents'>
+                    <p>팀원이 없습니다</p>
+                  </div>
+                ):
+                mentorData.list.slice(0, 3).map((mentee: IUser | null | undefined, index: number) => mentee && (
+                  <UserCard key={index} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
+                ))}
+            </div>
+
+            <div className='loading_component_div'>
+              {loading && <LoadingComponent/>}
+            </div>
+          </div>
+        </div>
+
+
+        <div className='project'>
+          <div className='header_space_between'>
+            <div className='header_layout'>
+              <h2>멘토링</h2>
+              <span>나에게 맞는 멘토를 구해보세요 🔥</span>
+            </div>
+            {/*Fixme : 멘토링 요청 페이지로 바꾸기*/}
+            <div className='header_layout'>
+              {isLogin && (UserRole === 'MENTOR' || UserRole === 'ADMIN' ? (
+                <Link to='/create/mentoring'>멘토링 만들기</Link>
+              ) : (
+                <Link to='/auth/mentor'>멘토링 요청</Link>
+              ))}
+            </div>
+          </div>
 
           <div className={'card_layout' + (!loading && isEmpty ?  ' no_contents' : '')}
                ref={infScrollLayout}>
