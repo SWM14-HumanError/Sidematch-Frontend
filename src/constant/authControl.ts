@@ -70,6 +70,10 @@ const authControl = {
     const info = authControl.getInfoFromToken();
     return info ? info.id : 0;
   },
+  isLogin() {
+    const info = authControl.getInfoFromToken();
+    return !!info;
+  },
   getHeader() {
     const token = authControl.getToken();
     let header: object = {'Content-Type': 'application/json'};

@@ -1,3 +1,5 @@
+import React from "react";
+import {createBrowserRouter, matchPath} from 'react-router-dom';
 import MainPage from '@pages/MainPage/MainPage.tsx';
 import MainProjectPage from '@pages/MainPage/MainProjectPage.tsx';
 import MainStudyPage from '@pages/MainPage/MainStudyPage.tsx';
@@ -37,8 +39,8 @@ import FAQ from '@pages/DummyPages/FAQ.tsx';
 import TermsOfInfo from '@pages/DummyPages/TermsOfInfo.tsx';
 import TermsOfService from '@pages/DummyPages/TermsOfService.tsx';
 import Page404 from '@pages/Page404.tsx';
-import {createBrowserRouter} from 'react-router-dom';
 import GlobalUseEffect from "@hooks/GlobalUseEffect.tsx";
+import ApplyDenyContentsDialog from "@components/dialogLayout/ApplyDenyContentsDialog.tsx";
 
 export const MAP_ROUTE = [
   {path: '/', title: '사이드 프로젝트 매칭 플랫폼', element: (<MainPage/>), auth: ['ALL']},
@@ -109,3 +111,25 @@ export const BROWSER_ROUTER = createBrowserRouter([
     }))
   }
 ]);
+
+
+export interface ModalRoute {
+  modal: string;
+  element?: React.ReactNode;
+}
+
+export enum ModalName {
+  DENY_CONTENTS = 'denyContents',
+}
+
+export const MODAL_ROUTE: ModalRoute[] = [
+  {modal: ModalName.DENY_CONTENTS, element: (<ApplyDenyContentsDialog/>)},
+];
+
+interface partialRoute {
+  path: string;
+}
+
+export function findRoute<T extends partialRoute>(routes: T[], path: string): T | undefined {
+  return routes.find(route => matchPath(route.path, path));
+}

@@ -1,4 +1,4 @@
-let alertQueue: string[] = [];
+const alertQueue: string[] = [];
 let prevAlert: string = '';
 let prevAlertTime: Date = new Date('1970-01-01');
 let alerting = false;
