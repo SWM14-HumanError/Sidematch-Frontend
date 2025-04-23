@@ -27,6 +27,10 @@ import ProfileSetting from '@pages/ProfilePage/ProfileSetting.tsx';
 import MentorAuthPage from '@pages/MentorAuthPage.tsx';
 import CompanyAuthPage from '@pages/CompanyAuthPage.tsx';
 import EditMentoringPage from '@pages/MentoringPage/EditMentoringPage.tsx';
+import MentorDetail from "@pages/MentoringPage/MentorDetail.tsx";
+import MentoringRegisterPage from "@pages/MentoringPage/MentoringRegisterPage.tsx";
+import MenteeDashboardPage from "@pages/MentoringPage/MenteeDashboardPage.tsx";
+import MentorDashboardPage from "@pages/MentoringPage/MentorDashboardPage.tsx";
 import ChatPage from '@pages/DummyPages/ChatPage.tsx';
 import AdminPage from '@pages/AdminPage/AdminPage.tsx';
 import MentorVerifyPage from '@pages/AdminPage/MentorVerifyPage.tsx';
@@ -81,6 +85,15 @@ export const MAP_ROUTE = [
   {path: '/auth/enterprise', title: '기업 인증', element: (<CompanyAuthPage/>), auth: ['LOGIN']},
   {path: '/create/mentoring', title: '멘토링 만들기', element: (<EditMentoringPage/>), auth: ['MENTOR', 'ADMIN']},
   {path: '/update/mentoring/:mentoringId', title: '멘토링 수정', element: (<EditMentoringPage/>), auth: ['MENTOR', 'ADMIN']},
+
+  {path: '/mentor/:mentorId', title: '멘토 프로필', element: (<MentorDetail/>), auth: ['ALL']},
+  {path: '/mentor/mentoring/create', title: '멘토링 등록', element: (<MentoringRegisterPage/>), auth: ['ALL']},
+  {path: '/mentee/dashboard', title: '🧑‍🎓 멘티 대시보드 페이지', element: (<MenteeDashboardPage/>), auth: ['LOGIN']},
+  {path: '/mentoring/request', title: '➕ 멘토링 요청하기 페이지', element: '<MentoringRequestPage/>', auth: ['LOGIN']},
+  {path: '/mentor/dashboard', title: '👨‍🏫 멘토(용) 대시보드 페이지', element: (<MentorDashboardPage/>), auth: ['MENTOR']},
+  {path: '/mentor/apply', title: '✍️ 멘토 지원 페이지', element: '<MentorApplyPage/>', auth: ['LOGIN']},
+  {path: '/mentoring/catalog', title: '📚 멘토링 카탈로그 페이지', element: '<MentoringCatalogPage/>', auth: ['ALL']},
+
 
   {path: '/chat', title: '채팅', element: (<ChatPage/>), auth: ['LOGIN']},
 

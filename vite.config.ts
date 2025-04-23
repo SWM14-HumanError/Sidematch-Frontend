@@ -1,6 +1,7 @@
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import {ConfigEnv, defineConfig, loadEnv} from 'vite';
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -15,9 +16,12 @@ export default ({mode}: ConfigEnv) => {
       'global': {},
     },
 
-    plugins: [react(), sentryVitePlugin({
-      org: 'humanerror',
-      project: 'match-up-frontend'
+    plugins: [
+      react(),
+      tailwindcss(),
+      sentryVitePlugin({
+        org: 'humanerror',
+        project: 'match-up-frontend'
     })],
 
     base: '/',
