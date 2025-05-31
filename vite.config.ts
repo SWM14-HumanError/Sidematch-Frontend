@@ -2,6 +2,7 @@ import { sentryVitePlugin } from '@sentry/vite-plugin';
 import {ConfigEnv, defineConfig, loadEnv} from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
 // https://vitejs.dev/config/
@@ -19,9 +20,11 @@ export default ({mode}: ConfigEnv) => {
     plugins: [
       react(),
       tailwindcss(),
+      visualizer({open: true, filename: './dist/stats.html'}),
       sentryVitePlugin({
         org: 'humanerror',
-        project: 'match-up-frontend'
+        project: 'match-up-frontend',
+        telemetry: false,
     })],
 
     base: '/',
@@ -75,8 +78,8 @@ export default ({mode}: ConfigEnv) => {
       }
     },
 
-    build: {
-      sourcemap: true
-    }
+    // build: {
+    //   sourcemap: true
+    // }
   });
 }
