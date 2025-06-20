@@ -8,7 +8,7 @@ import Like from '@components/svgs/Like.tsx';
 import Edit from '@components/svgs/Edit.tsx';
 import FeedComment from '@components/feeds/FeedComment.tsx';
 import useLikeQuery from '@hooks/useLikeQuery.ts';
-import useInfScroll4Widget from '@hooks/useInfScroll4Widget.ts';
+import useInfScroll4Widget from '@hooks/infScroll/useInfScroll4Widget.ts';
 import useUserInfo from '@hooks/useUserInfo.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
 import {IMainFeedComment, IMainFeeds} from '@constant/interfaces.ts';

@@ -7,7 +7,7 @@ import TierSvg from '@components/svgs/Tier/TierSvg.tsx';
 import UserOnlyIcon from '@components/svgs/UserOnlyIcon.tsx';
 import ChattingComponent from '@components/ChattingComponent.tsx';
 import ChattingDialog from '@components/dialogLayout/ChattingDialog.tsx';
-import useInfScroll4Widget from '@hooks/useInfScroll4Widget.ts';
+import useInfScroll4Widget from '@hooks/infScroll/useInfScroll4Widget.ts';
 import useUserInfo from '@hooks/useUserInfo.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
 import {IChattingMessage, IChattingRoom} from '@constant/interfaces.ts';

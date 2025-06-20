@@ -1,6 +1,6 @@
 import {NavigateFunction} from 'react-router-dom';
 import authControl, {RefreshRequestMaxCount} from './authControl.ts';
-import infScroll from './InfScroll.ts';
+import infScroll from './infScroll/InfScroll.ts';
 import Alert from './Alert.ts';
 
 export default {

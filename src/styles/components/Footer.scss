@@ -27,6 +27,7 @@ footer {
     max-width: 1216px;
     padding: 24px;
     margin: 0 auto 68px auto;
+    box-sizing: border-box;
 
     display: grid;
     grid-template-columns: 40% 60%;

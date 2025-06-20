@@ -9,10 +9,11 @@ import {
   IMentorVerifyList,
   IJobPosting
 } from '@constant/interfaces.ts';
-import stackList from '@constant/stackList.ts';
+import STACKS from '@public/stacks.json';
 import {BigTechTypeEn, BigTechTypeKo, CareerOptions} from '@constant/selectOptions.ts';
 
 const DUMMY_LENGTH = 15;
+const stackList = STACKS.stacks;
 
 export const projects: IProjectList = {
   teamSearchResponseList:

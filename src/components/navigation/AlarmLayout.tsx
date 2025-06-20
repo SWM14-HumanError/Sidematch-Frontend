@@ -1,11 +1,10 @@
 import {useEffect, useRef, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import CircleHamburger from '../svgs/CircleHamburger.tsx';
-import useInfScroll4Widget from '@hooks/useInfScroll4Widget.ts';
+import useInfScroll4Widget from '@hooks/infScroll/useInfScroll4Widget.ts';
 import {IAlarmData, IAlarmList} from '@constant/interfaces.ts';
 import dataGen from '@constant/dateGen.tsx';
 import Api from '@constant/Api.ts';
-import {JSX} from 'react/jsx-runtime';
 
 //PROJECT, STUDY, FEED, MENTORING, ETC
 const AlarmCategories = [
@@ -48,12 +47,13 @@ interface IAlarmLayout {
   setAlarmMenuData: (alarmMenuData: IAlarmMenu) => void;
 }
 
-function AlarmLayout({setIsAlarmModalOpened, setHasAlarm, setIsMenuOpened, setAlarmMenuData}: IAlarmLayout) {
+function AlarmLayout({setIsAlarmModalOpened, setHasAlarm, setIsMenuOpened, setAlarmMenuData}: Readonly<IAlarmLayout>) {
   const infScrollRef = useRef(null);
   const [selectedCategory, setSelectedCategory] = useState(0);
 
   const {data, setReqParams, changeData, hideData}
-    = useInfScroll4Widget<IAlarmList>('/api/v1/alert', 'alertResponseList', infScrollRef, InitialAlarmData, {page: 0});
+    = useInfScroll4Widget<IAlarmData>('/api/v1/alert', 'alertResponseList', infScrollRef, InitialAlarmData, {page: 0});
+  const alerts = data.alertResponseList ?? [];
 
   useEffect(() => {
     setReqParams({
@@ -63,13 +63,13 @@ function AlarmLayout({setIsAlarmModalOpened, setHasAlarm, setIsMenuOpened, setAl
   }, [selectedCategory]);
 
   useEffect(() => {
-    if (data.alertResponseList.length && !data.alertResponseList.some((v: any) => !!v)) {
-      setHasAlarm(data.alertResponseList.slice(10).some((alert: any) => !!alert && !alert.read));
+    if (alerts.length && !alerts.some((v) => !!v)) {
+      setHasAlarm(alerts.slice(10).some((alert) => !!alert && !alert.read));
     }
   }, [data]);
 
-  function dataIsEmpty(data: any) {
-    return !data.alertResponseList.length || !data.alertResponseList.some((v: any) => !!v);
+  function dataIsEmpty(data: IAlarmList): boolean {
+    return !data.alertResponseList.length || !data.alertResponseList.some((v) => !!v);
   }
 
   return (
@@ -86,20 +86,20 @@ function AlarmLayout({setIsAlarmModalOpened, setHasAlarm, setIsMenuOpened, setAl
       </div>
       <div className='alarm_contents_container'>
         <ul className='alarm_contents'>
-          {dataIsEmpty(data) ? (
-              <li>
-                <div className='alarm_content read'><p>알림이 없습니다</p></div>
-              </li>
-            ) :
-            data.alertResponseList.map((data: JSX.IntrinsicAttributes & IAlarmContent, index: number) => data && (
-              <AlarmContent key={data.id}
-                            {...data}
-                            setIsAlarmModalOpened={setIsAlarmModalOpened}
-                            setIsMenuOpened={setIsMenuOpened}
-                            setAlarmMenuData={setAlarmMenuData}
-                            changeData={data => changeData(index, data)}
-                            deleteData={() => hideData(index)}/>
-            ))}
+          {dataIsEmpty(data as IAlarmList) ? (
+            <li>
+              <div className='alarm_content read'><p>알림이 없습니다</p></div>
+            </li>
+          ) :
+          alerts.map((alert, index: number) => alert && (
+            <AlarmContent key={alert.id}
+                          {...alert}
+                          setIsAlarmModalOpened={setIsAlarmModalOpened}
+                          setIsMenuOpened={setIsMenuOpened}
+                          setAlarmMenuData={setAlarmMenuData}
+                          changeData={data => changeData(index, data)}
+                          deleteData={() => hideData(index)}/>
+          ))}
         </ul>
       </div>
     </div>
@@ -130,7 +130,7 @@ interface IAlarmContent extends IAlarmData {
   setIsAlarmModalOpened: (isAlarmModalOpened: boolean) => void;
   setIsMenuOpened: (isMenuOpened: boolean) => void;
   setAlarmMenuData: (alarmMenuData: IAlarmMenu) => void;
-  changeData: (arg: any) => void;
+  changeData: (func: (prev: IAlarmData) => IAlarmData) => void;
   deleteData: () => void;
 }
 
@@ -146,14 +146,14 @@ function AlarmContent({
                         setAlarmMenuData,
                         changeData,
                         deleteData
-                      }: IAlarmContent) {
+                      }: Readonly<IAlarmContent>) {
   const navigate = useNavigate();
   const buttonRef = useRef(null);
 
   function readAlarm() {
     if (!read)
       Api.fetch(`/api/v1/alert/read/${id}`, 'POST')
-        .then(() => changeData((prev: any) => ({...prev, read: true})))
+        .then(() => changeData((prev) => ({...prev, read: true})))
         .catch(err => console.error(err));
   }
 
@@ -169,8 +169,16 @@ function AlarmContent({
       .catch(err => console.error(err));
   }
 
-  function openAlarmMenu(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.stopPropagation();
+  function openAlarmMenuKey(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openAlarmMenu();
+    }
+  }
+
+  function openAlarmMenu(e?: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    if (e) e.stopPropagation();
+
     setAlarmMenuData({
       read,
       readAlarm,
@@ -180,9 +188,13 @@ function AlarmContent({
     setIsMenuOpened(true);
   }
 
+  // Todo: aria 설정 다시 할 것
   return (
     <li>
       <div className={'alarm_content' + (read ? ' read' : '')}
+           role='menu'
+           tabIndex={0}
+           onKeyDown={openAlarmMenuKey}
            onClick={readAlarmAndClose}>
         <div className='alarm_content_header'>
           <div>
@@ -215,7 +227,7 @@ const InitAlarmMenu: IAlarmMenu = {
   target: null,
 }
 
-export function AlarmMenu({read, readAlarm, target, setIsMenuOpened, deleteAlarm}: IAlarmMenu) {
+export function AlarmMenu({read, readAlarm, target, setIsMenuOpened, deleteAlarm}: Readonly<IAlarmMenu>) {
   const rect = target?.getBoundingClientRect();
   const center = rect ? (rect?.left + rect?.right) / 2 : 0;
   const width = 128;
@@ -229,21 +241,30 @@ export function AlarmMenu({read, readAlarm, target, setIsMenuOpened, deleteAlarm
     if (setIsMenuOpened)
       setIsMenuOpened(false);
   }
+  function closeMenuByKey(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Escape' && setIsMenuOpened) {
+      setIsMenuOpened(false);
+    }
+  }
 
   return (
-    <div className='modal_menu_background' onClick={clickOutside}>
+    <div className='modal_menu_background' role="none" onClick={clickOutside}>
       <div className='alarm_content_menu'
+           role='menu'
+           tabIndex={-1}
+           aria-label="알림 메뉴"
            style={{top: y, left: x}}
+           onKeyDown={closeMenuByKey}
            onClick={e => e.stopPropagation()}>
         {!read && (
-          <button onClick={() => {
+          <button role="menuitem" onClick={() => {
             if (setIsMenuOpened) setIsMenuOpened(false);
             readAlarm();
           }}>
             읽음으로 표시
           </button>
         )}
-        <button onClick={() => {
+        <button role="menuitem" onClick={() => {
           if (setIsMenuOpened) setIsMenuOpened(false);
           deleteAlarm();
         }}>

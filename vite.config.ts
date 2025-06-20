@@ -25,6 +25,9 @@ export default ({mode}: ConfigEnv) => {
         org: 'humanerror',
         project: 'match-up-frontend',
         telemetry: false,
+        sourcemaps: {
+          filesToDeleteAfterUpload: ['**/*.map'],
+        },
     })],
 
     base: '/',
@@ -43,6 +46,7 @@ export default ({mode}: ConfigEnv) => {
 
     server: {
       host: '0.0.0.0',
+      open: true,
       proxy: {
         '/api': {
           target: TargetServer,
@@ -78,8 +82,8 @@ export default ({mode}: ConfigEnv) => {
       }
     },
 
-    // build: {
-    //   sourcemap: true
-    // }
+    build: {
+      sourcemap: true
+    }
   });
 }

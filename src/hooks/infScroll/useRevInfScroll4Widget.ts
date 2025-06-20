@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {DEFAULT_PAGE_SIZE} from './useInfScroll.ts';
-import InfScroll from '@constant/InfScroll.ts';
+import InfScroll from '@constant/infScroll/InfScroll.ts';
 import Api from '@constant/Api.ts';
 
 const InitialData = {
@@ -11,10 +11,11 @@ const InitialData = {
 // page 관리, 데이터 관리 등등을 수행해주면 될 것 같아요, 마치 react-query 같은 느낌으로요
 // Todo : Ts 오류 고치기 - 타입 수정
 // Todo: DOM 최적화 하기
+// Todo: 판별 로직만 따로 뺀 컴포넌트 생성하기 - 코드 중복 제거
 function useInfScroll4Widget<T>(
   apiUrl: string,
   arrayTag: string, //'userCardResponses'|'teamSearchResponseList'|'feedSearchResponses',
-  infScrollLayout: React.RefObject<HTMLDivElement>,
+  infScrollLayout: React.RefObject<HTMLDivElement|HTMLUListElement>,
   dummyData: any|T,
   defaultParams:object|undefined) {
 
@@ -47,12 +48,12 @@ function useInfScroll4Widget<T>(
     if (!container) return;
 
     // 스크롤 위치와 컴포넌트의 높이 및 스크롤 가능한 높이 확인
-    const parent = container.parentElement;
-    const { scrollTop, clientHeight, scrollHeight } = container;
+    const { scrollTop } = container;
     const scrollThreshold = 32;
 
-    if (data.hasNextSlice && (scrollTop + clientHeight >= scrollHeight - scrollThreshold ||
-        parent && scrollHeight < parent.clientHeight + scrollThreshold)) {
+    // console.log('handleScroll', scrollTop, container.clientHeight, container.scrollHeight)
+
+    if (data.hasNextSlice && scrollTop <= scrollThreshold) {
       if (!loading)
         setTriggered(true);
     }
@@ -100,10 +101,13 @@ function useInfScroll4Widget<T>(
   }
 
   function setReqParams(params: { [key: string]: any }) {
-    setLoading(false);
-    setSearchParams({...params, page: 0});
-    setTriggered(true);
-    setData({...InitialData, [arrayTag]: []});
+    // Fixme: 새로운 채팅을 만들면서 새로운 채팅을 보냈을 때, 서버와의 통신 시간 때문에, 첫 채팅이 안보이게 업데이트 되는 오류가 있음
+    setTimeout(() => {
+      setLoading(false);
+      setSearchParams({...params, page: 0});
+      setTriggered(true);
+      setData({...InitialData, [arrayTag]: []});
+    }, 300)
   }
 
   function changeData(index: number, func: (arg0: any) => any) {
@@ -112,6 +116,14 @@ function useInfScroll4Widget<T>(
       [arrayTag]: prev[arrayTag].map((v, i) => i === index ? func(v) : v),
     }));
   }
+
+  function changeDataAll(func: (arg0: any) => any) {
+    setData((prev: { [x: string]: any[]; }) => ({
+      ...prev,
+      [arrayTag]: prev[arrayTag].map((v) => func(v)),
+    }));
+  }
+
   function hideData(index: number) {
     setData((prev: { [x: string]: any[]; }) => ({
       ...prev,
@@ -123,7 +135,7 @@ function useInfScroll4Widget<T>(
     return data.size === 0 || data[arrayTag].length === 0 || data[arrayTag].every((v: any) => !v);
   }
 
-  return {data, loading, setReqParams, changeData, hideData, isEmpty};
+  return {data, loading, setReqParams, changeData, changeDataAll, hideData, isEmpty};
 }
 
 export default useInfScroll4Widget;

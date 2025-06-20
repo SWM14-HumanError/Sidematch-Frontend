@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {JSX} from 'react/jsx-runtime';
 import {IMainFeedComment} from '@constant/interfaces.ts';
 import FeedComment from '@components/feeds/FeedComment.tsx';
-import useInfScroll4Widget from '@hooks/useInfScroll4Widget.ts';
+import useInfScroll4Widget from '@hooks/infScroll/useInfScroll4Widget.ts';
 import authControl from '@constant/authControl.ts';
 import Alert from '@constant/Alert.ts';
 import Api from '@constant/Api.ts';

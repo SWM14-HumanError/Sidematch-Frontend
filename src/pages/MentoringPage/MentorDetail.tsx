@@ -1,4 +1,3 @@
-import React from "react";
 import Navigation from "@components/navigation/Navigation.tsx";
 import Footer from "@components/Footer.tsx";
 

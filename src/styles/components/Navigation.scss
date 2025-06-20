@@ -224,11 +224,11 @@ nav {
   .alarm_modal {
   }
 
-  button.svg_button {
+  button.svg_button, a.svg_button {
     padding: 0;
     margin: 0;
+    line-height: 0;
     background: transparent;
-    border-radius: 0;
     height: auto;
   }
 

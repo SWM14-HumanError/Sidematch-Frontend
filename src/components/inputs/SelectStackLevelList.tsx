@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import SelectStackLevel, {getTechListEng, getTechListKor, IData, TechListKor} from './SelectStackLevel.tsx';
 import {ITechStack, IUserTagPosition} from '@constant/interfaces.ts';
 import {getTechStack} from '@constant/SearchTeckStacks.ts';
-import TechStacks from '@constant/stackList.ts';
+import {useStacks} from '@constant/stackList.ts';
 import dataGen from '@constant/dateGen.tsx';
 
 interface IProps {
@@ -13,9 +13,12 @@ interface IProps {
 
 const EmptyData: IData = {techType: TechListKor[0], stacks: [], typeLevel: 0};
 
-function SelectStackLevelList({className='', value, setData}: IProps) {
+function SelectStackLevelList({className='', value, setData}: Readonly<IProps>) {
   const [techStacks, setTechStacks] = useState<IData[]>([{...EmptyData}]);
   const [availableTechTypes, setAvailableTechTypes] = useState<string[]>([...TechListKor]);
+
+  const {data} = useStacks();
+  const TechStacks = data || [];
 
   useEffect(() => {
     const data = value ? value.map(v => ({
@@ -67,7 +70,7 @@ function SelectStackLevelList({className='', value, setData}: IProps) {
 
   function string2TechStack(stack: string): ITechStack | null {
     const result = TechStacks.find(v => v.tagName === stack);
-    return result ? result : null;
+    return result ?? null;
   }
   
   function deleteStack(index: number) {
@@ -81,7 +84,7 @@ function SelectStackLevelList({className='', value, setData}: IProps) {
   return (
     <ul className={className}>
       {techStacks.map((value, index) => (
-        <SelectStackLevel key={index}
+        <SelectStackLevel key={value.techType}
                           data={value}
                           setData={data => setStack(index, data)}
                           availableTechTypes={availableTechTypes}

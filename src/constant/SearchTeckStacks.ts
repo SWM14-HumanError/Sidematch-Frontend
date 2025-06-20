@@ -1,17 +1,18 @@
 import {DefaultStack, InitSearchedStackNames} from '@constant/initData.ts';
-import TechStacks from '@constant/stackList.ts';
+import Stacks from '@public/stacks.json';
 import {ITechStack} from '@constant/interfaces.ts';
-import stackList from '@constant/stackList.ts';
 import {disassemble} from 'es-hangul';
 
 const SEARCH_THRESHOLD = 2;
 const SEARCHED_STACK_STORAGE_NAME = 'searched_stacks';
 
+// Fixme: 스택 데이터 비동기 처리로 변경 필요
+const StackList = Stacks.stacks;
 
 /** 스택 이름으로 스택을 가져옵니다. */
 export function getTechStack(name: string) {
   const normalizedStack = name.toLowerCase().replace(/\./g, '');
-  const techStack = stackList.filter(tech => tech.tagName === normalizedStack);
+  const techStack = StackList.filter(tech => tech.tagName === normalizedStack);
 
   if (techStack.length > 0)
     return techStack[0];
@@ -47,7 +48,7 @@ export function searchTechStacks(search: string) {
   const stackNames = stacksString ? stacksString.split(',') : InitSearchedStackNames;
 
   const FavoriteStacks = stackNames.map(name =>
-    TechStacks.find(stack => stack.tagName === name) ?? {...DefaultStack, tagName: name});
+    StackList.find(stack => stack.tagName === name) ?? {...DefaultStack, tagName: name});
 
   if (!search) {
     if (!stacksString)
@@ -60,7 +61,7 @@ export function searchTechStacks(search: string) {
   // 검색어를 한국어 자모음으로 분해합니다.
   const disassembledSearch = disassemble(search.toLowerCase().replace(/\./g, ''));
 
-  const ElseStacks = TechStacks.filter(stack => !stackNames.includes(stack.tagName));
+  const ElseStacks = StackList.filter(stack => !stackNames.includes(stack.tagName));
   const AllStacks = [...FavoriteStacks, ...ElseStacks];
 
   // 검색어로 시작하는 스택을 찾습니다.
@@ -99,7 +100,7 @@ export function isMatchedStack(search: string, stack: ITechStack) {
 }
 
 export function hasTechStack(name: string) {
-  return TechStacks.some(stack => stack.tagName === name);
+  return StackList.some(stack => stack.tagName === name);
 }
 
 /** 검색한 스택을 저장합니다.*/
@@ -111,7 +112,6 @@ export function saveSelectedTechStack(stackName: string) {
     stackName,
     ...stackNames.filter(name => name !== stackName)
   ].slice(0, 20);
-  // console.log(SaveArr);
 
   localStorage.setItem(SEARCHED_STACK_STORAGE_NAME, SaveArr.join(','));
 }

@@ -13,7 +13,7 @@ interface ISelectBox<T> {
   hasDefault?: boolean;
 }
 
-function SelectBox({options, value, onChange, hasDefault=true, selectRef}: ISelectBox<string|number>) {
+function SelectBox({options, value, onChange, hasDefault=true, selectRef}: Readonly<ISelectBox<string|number>>) {
   const defaultOption = typeof options[0] === 'object' ? options[0].option : options[0];
   const [selectValue, setSelectValue] = React.useState<string|number>(defaultOption);
 
@@ -23,23 +23,21 @@ function SelectBox({options, value, onChange, hasDefault=true, selectRef}: ISele
   }
 
   return (
-    <>
-      <select value={value}
-              ref={selectRef}
-              onChange={changeValue}
-              className={hasDefault && selectValue == options[0] ? 'is_default_value' : ''}>
-        {options.map((option) =>
-          typeof option === 'object' ? (
-            <option key={option.value} value={option.value}>
-              {option.option}
-            </option>
-          ) : (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-      </select>
-    </>
+    <select value={value}
+            ref={selectRef}
+            onChange={changeValue}
+            className={hasDefault && selectValue == options[0] ? 'is_default_value' : ''}>
+      {options.map((option) =>
+        typeof option === 'object' ? (
+          <option key={option.value} value={option.value}>
+            {option.option}
+          </option>
+        ) : (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+    </select>
   )
 }
 

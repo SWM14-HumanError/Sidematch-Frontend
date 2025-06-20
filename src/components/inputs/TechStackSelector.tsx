@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import StackImage from '@components/StackImage.tsx';
-import CloseIcon from '@components/svgs/CloseIcon.tsx';
 import Search from '@components/svgs/Search.tsx';
-import {searchTechStacks, saveSelectedTechStack, getTechStack, isMatchedStack} from '@constant/SearchTeckStacks.ts';
-import TechStacks from '@constant/stackList.ts';
+import CloseIcon from '@components/svgs/CloseIcon.tsx';
+import StackImage from '@components/StackImage.tsx';
 import Alert from '@constant/Alert.ts';
-import '@styles/components/TechStackSelector.scss';
+import {useStacks} from '@constant/stackList.ts';
 import {DefaultStack} from '@constant/initData.ts';
 import {ITechStack} from '@constant/interfaces.ts';
+import {searchTechStacks, saveSelectedTechStack, getTechStack, isMatchedStack} from '@constant/SearchTeckStacks.ts';
+import '@styles/components/TechStackSelector.scss';
 
 interface ITechStackSelector {
   value: string[];
@@ -20,11 +20,13 @@ interface ITechStackSelector {
 
 // Todo: 기능이 많아지면서 컴포넌트 리펙터링 필요
 // Fixme: dom + 이미지가 많아지면서 버벅이는 이슈 나옴 / + isOpen 처리하는데 오랜시간 걸림 (localstorage load 때문)
-function TechStackSelector({value, placeholder='스택 입력', max=Infinity, allowCustomInput=false, hideSelectedOptions=false, onChange}: ITechStackSelector) {
+function TechStackSelector({value, placeholder='스택 입력', max=Infinity, allowCustomInput=false, hideSelectedOptions=false, onChange}: Readonly<ITechStackSelector>) {
   const popupRef = useRef<HTMLDivElement>(null);
   const searchCloneRef = useRef<HTMLSpanElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
   const ulRef = useRef<HTMLUListElement>(null);
+  const {data} = useStacks();
+  const TechStacks = data || [];
 
   const [isShow, setIsShow] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');

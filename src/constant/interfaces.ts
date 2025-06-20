@@ -196,9 +196,9 @@ export interface IEditMainMentoringRequest {
   stacks: string[];
   roleType: string;
   career: string;
-  imageName?: string|undefined;
-  imageBase64?: string|null|undefined;
-  thumbnailUrl?: string|null|undefined;
+  imageName?: string;
+  imageBase64?: string|null;
+  thumbnailUrl?: string|null;
 }
 
 export interface IMainFeeds {
@@ -240,10 +240,6 @@ export interface IMainFeedComment {
 export interface IMainFeedsList extends InfScroll {
   feedSearchResponses: Array<IMainFeeds|null|undefined>;
 }
-
-// export interface IMainFeedCommentList extends InfScroll {
-//   comments: Array<IMainFeedComment|null|undefined>;
-// }
 
 export interface IEditFeedInfo {
   title: string;
@@ -485,8 +481,6 @@ export interface IMentorVerifyList extends InfScroll {
 export interface ICompanyAuthRequest {
   content: string;
   enterpriseEmail: string;
-  // certificateName: string|null;
-  // certificateBase64: string|null;
 }
 
 export interface ICompanyAdminVerify {
@@ -533,10 +527,6 @@ export interface IChattingMessage {
   message: string;
   isRead: 0|1;
   sendTime: string;
-}
-
-export interface IChattingMessageList extends InfScroll {
-  chatMessageResponseList: (IChattingMessage|null|undefined)[];
 }
 
 export interface IInquiry {

@@ -1,8 +1,9 @@
 import {useEffect, useRef} from 'react';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import AdminNavigation from '@components/navigation/AdminNavigation.tsx';
 import {ICompanyVerify, ICompanyVerifyList} from '@constant/interfaces.ts';
-import {CompanyVerifyAdapter} from '@constant/InfScrollAdapter.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
+import {CompanyVerifyAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
 import Alert from '@constant/Alert.ts';
 import Api from '@constant/Api.ts';
 
@@ -15,9 +16,9 @@ const ThList = ['id', '닉네임', '이메일', '소개', '상태', '상태 변�
 function AdminPage() {
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new CompanyVerifyAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty}
-    = useInfScroll<ICompanyVerifyList, ICompanyVerify>(adapter.current, infScrollLayout);
+    = useInfScroll<ICompanyVerifyList, ICompanyVerify>(new CompanyVerifyAdapter(), trigger);
 
   useEffect(() => {
     document.body.style.overflow = 'auto';
@@ -35,7 +36,7 @@ function AdminPage() {
           location.href = '/admin';
         }
         else {
-          throw new Error(response || '상태 변경에 실패했습니다');
+          throw new Error('상태 변경에 실패했습니다');
         }
       }).catch(e => {
         Alert.show('상태 변경에 실패했습니다');
@@ -65,7 +66,7 @@ function AdminPage() {
             </thead>
             <tbody>
               {data.list.map((verifies, index: number) => verifies && (
-                <EnterpriseVerifyView key={index} {...verifies}
+                <EnterpriseVerifyView key={verifies.enterpriseApplyId} {...verifies}
                                       changeState={() => changeState(index)}/>
               ))}
             </tbody>
@@ -81,7 +82,7 @@ interface IEnterpriseVerifyView extends ICompanyVerify {
   changeState: () => void;
 }
 
-function EnterpriseVerifyView({enterpriseApplyId, content, enterpriseEmail, userNickname, isAccepted, changeState}: IEnterpriseVerifyView) {
+function EnterpriseVerifyView({enterpriseApplyId, content, enterpriseEmail, userNickname, isAccepted, changeState}: Readonly<IEnterpriseVerifyView>) {
   return (
     <tr>
       <td>{enterpriseApplyId}</td>

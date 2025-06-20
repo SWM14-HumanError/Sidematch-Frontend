@@ -6,12 +6,13 @@ import UserCard from '@components/cards/UserCard.tsx';
 import LoginRecommendDialog from '@components/dialogLayout/LoginRecommendDialog.tsx';
 import LoadingComponent from '@components/LoadingComponent.tsx';
 import Footer from '@components/Footer.tsx';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
 import {MapLocationName} from '@components/svgs/maps/MapRouter.tsx';
-import {IUser, IUserCardList} from '@constant/interfaces.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
 import {MeetingTypes, TechTypeOptions} from '@constant/selectOptions.ts';
-import {MenteeAdapter} from '@constant/InfScrollAdapter.ts';
+import {MenteeAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
+import {IUser, IUserCardList} from '@constant/interfaces.ts';
 import '@styles/MainProjectPage.scss';
 
 const SortOptions = [
@@ -38,9 +39,9 @@ function MainMenteePage() {
 
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new MenteeAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty, isEnded, setReqParams}
-    = useInfScroll<IUserCardList, IUser>(adapter.current, infScrollLayout);
+    = useInfScroll<IUserCardList, IUser>(new MenteeAdapter(), trigger);
 
   function search() {
     let searchObj = {};
@@ -151,8 +152,8 @@ function MainMenteePage() {
                   <p>팀원이 없습니다</p>
                 </div>
               ):
-              data.list.map((mentee: IUser | null | undefined, index: number) => mentee && (
-                <UserCard key={index} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
+              data.list.map((mentee: IUser | null | undefined) => mentee && (
+                <UserCard key={mentee.userID} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
               ))}
             </div>
 

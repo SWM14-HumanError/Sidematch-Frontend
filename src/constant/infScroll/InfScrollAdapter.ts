@@ -8,7 +8,7 @@ import {
   IUserCardList,
   SearchParams
 } from '@constant/interfaces.ts';
-import {DEFAULT_PAGE_SIZE} from '@hooks/useInfScroll.ts';
+import {DEFAULT_PAGE_SIZE} from '@hooks/infScroll/useInfScroll.ts';
 import {
   enterprises,
   feeds, jobPostings,
@@ -17,7 +17,7 @@ import {
   mentorVerifies,
   projects,
   studies
-} from '../dummies/dummyData.ts';
+} from '../../dummies/dummyData.ts';
 
 /**
  * InfScrollAdapter
@@ -78,7 +78,7 @@ export class MenteeAdapter implements InfScrollAdapter<IUserCardList, IUser> {
 // = useInfScroll<IMainMentorList, IMentoring>('/api/v1/mentorings', 'mentoringSearchResponses', infScrollLayout, mentorsDummy, {});
 export class MentorAdapter implements InfScrollAdapter<IMainMentorList, IMentoring> {
   ApiUrl = '/api/v1/mentorings';
-  DummyData = mentorsDummy.mentoringSearchResponses as IMentoring[];
+  DummyData = mentorsDummy.mentoringSearchResponses;
   DefaultParams = {};
 
   transform(data: IMainMentorList): InfList<IMentoring> {
@@ -137,7 +137,7 @@ export class InquiryAdapter implements InfScrollAdapter<IInquiryList, IInquiry> 
 // = useInfScroll<IMentorVerifyList>('/api/v1/mentoring/verify/list', 'verifyMentorsResponses', infScrollLayout, mentorVerifies, {});
 export class MentorVerifyAdapter implements InfScrollAdapter<IMentorVerifyList, IMentorVerify> {
   ApiUrl = '/api/v1/mentoring/verify/list';
-  DummyData = mentorVerifies.verifyMentorsResponses as IMentorVerify[];
+  DummyData = mentorVerifies.verifyMentorsResponses;
   DefaultParams = {size: DEFAULT_PAGE_SIZE};
 
   transform(data: IMentorVerifyList): InfList<IMentorVerify> {
@@ -151,7 +151,7 @@ export class MentorVerifyAdapter implements InfScrollAdapter<IMentorVerifyList, 
 
 export class CompanyVerifyAdapter implements InfScrollAdapter<ICompanyVerifyList, ICompanyVerify> {
   ApiUrl = '/api/v1/enterprise/verify/list';
-  DummyData = enterprises.enterpriseApplyList as ICompanyVerify[];
+  DummyData = enterprises.enterpriseApplyList;
   DefaultParams = {size: DEFAULT_PAGE_SIZE};
 
   transform(data: ICompanyVerifyList): InfList<ICompanyVerify> {

@@ -7,10 +7,11 @@ import Search from '@components/svgs/Search.tsx';
 import LoadingComponent from '@components/LoadingComponent.tsx';
 import LoginRecommendDialog from '@components/dialogLayout/LoginRecommendDialog.tsx';
 import Footer from '@components/Footer.tsx';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
 import {IProjectList, ITeamProjectSummary} from '@constant/interfaces.ts';
-import {ProjectAdapter} from '@constant/InfScrollAdapter.ts';
+import {ProjectAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
 import {ProjectFields} from '@constant/selectOptions.ts';
 import authControl from '@constant/authControl.ts';
 
@@ -22,9 +23,10 @@ function MainProjectPage() {
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
   const isMobile = useWindowSizeStore(state => state.isMobile);
-  const adapter = useRef(new ProjectAdapter());
+
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty, isEnded, setReqParams}
-    = useInfScroll<IProjectList, ITeamProjectSummary>(adapter.current, infScrollLayout);
+    = useInfScroll<IProjectList, ITeamProjectSummary>(new ProjectAdapter(), trigger);
 
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState<boolean>(false);
 

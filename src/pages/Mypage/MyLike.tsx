@@ -8,7 +8,7 @@ import Footer from '@components/Footer.tsx';
 import LoginRecommendDialog from '@components/dialogLayout/LoginRecommendDialog.tsx';
 import useMentoringPopup from '@hooks/useMentoringPopup.ts';
 import MentorDialog from '@components/dialogLayout/MentorDialog.tsx';
-import InfScroll from '@constant/InfScroll.ts';
+import InfScroll from '@constant/infScroll/InfScroll.ts';
 import Api from '@constant/Api.ts';
 
 import '@styles/MainProjectPage.scss';

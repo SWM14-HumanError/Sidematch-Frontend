@@ -1,5 +1,4 @@
 import Navigation from "@components/navigation/Navigation.tsx";
-import React from "react";
 import Footer from "@components/Footer.tsx";
 
 const MenteeDashboardPage = () => {
@@ -110,7 +109,21 @@ const SectionTitle = ({ title }: { title: string }) => (
   <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
 );
 
-const MentoringRequestCard = ({ icon, title, date, status, mentor }: any) => (
+interface IMentoringRequestCard {
+  icon: string;
+  title: string;
+  date: string;
+  status: string;
+  mentor?: {
+    name: string;
+    role: string;
+    rating: number;
+    reviews: number;
+    tags: string[];
+  };
+}
+
+const MentoringRequestCard = ({ icon, title, date, status, mentor }: Readonly<IMentoringRequestCard>) => (
   <div className="bg-white p-4 rounded-xl shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div className="flex items-center gap-3">
       <img src={icon} className="w-8 h-8" alt="" />
@@ -142,11 +155,7 @@ const MentoringRequestCard = ({ icon, title, date, status, mentor }: any) => (
 );
 
 const SessionRequestCard = ({ name, date, status }: { name: string, date: string, status: string }) => {
-  const statusColor =
-    status === '검토중' ? 'bg-blue-100 text-blue-600' :
-      status === '대기중' ? 'bg-gray-100 text-gray-600' :
-        status === '진행중' ? 'bg-green-100 text-green-600' :
-          'bg-yellow-100 text-yellow-600';
+  const statusColor = getStatusColor(status);
 
   return (
     <div className="bg-white p-4 mt-2 rounded-xl shadow-sm flex justify-between items-center">
@@ -165,3 +174,18 @@ const AlertCard = ({ text, time }: { text: string, time: string }) => (
     <span className="text-xs text-gray-500">{time}</span>
   </div>
 );
+
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case '검토중':
+      return 'bg-blue-100 text-blue-600';
+    case '대기중':
+      return 'bg-gray-100 text-gray-600';
+    case '진행중':
+      return 'bg-green-100 text-green-600';
+    case '예정':
+      return 'bg-yellow-100 text-yellow-600';
+    default:
+      return 'bg-gray-200 text-gray-600';
+  }
+}

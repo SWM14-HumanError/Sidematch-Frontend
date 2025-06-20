@@ -211,7 +211,7 @@ interface IDataList {
   setIsLoginDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-function EnterPriseList({setIsLoginDialogOpen}: IDataList) {
+function EnterPriseList({setIsLoginDialogOpen}: Readonly<IDataList>) {
   const [projects, setProjects] = useState<IProjectList>(InitProject);
 
   useEffect(() => {
@@ -239,7 +239,7 @@ function EnterPriseList({setIsLoginDialogOpen}: IDataList) {
   );
 }
 
-function PersonalList({setIsLoginDialogOpen}: IDataList) {
+function PersonalList({setIsLoginDialogOpen}: Readonly<IDataList>) {
   const [studies, setStudies] = useState<IProjectList>(InitProject);
 
   useEffect(() => {
@@ -267,7 +267,7 @@ function PersonalList({setIsLoginDialogOpen}: IDataList) {
   );
 }
 
-function MenteeList({setIsLoginDialogOpen}: IDataList) {
+function MenteeList({setIsLoginDialogOpen}: Readonly<IDataList>) {
   const [users, setUsers] = useState<IUserCardList>(
     {userCardResponses: [], size: 0, hasNextSlice: false});
 
@@ -290,15 +290,15 @@ function MenteeList({setIsLoginDialogOpen}: IDataList) {
               <p>팀원이 없습니다</p>
             </div>
           ) :
-          users.userCardResponses.slice(0, MENTEE_SIZE).map((mentee: IUser | null | undefined, index: number) => mentee && (
-            <UserCard key={index} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
+          users.userCardResponses.slice(0, MENTEE_SIZE).map((mentee: IUser | null | undefined) => mentee && (
+            <UserCard key={mentee.userID} {...mentee} setLoginDialog={setIsLoginDialogOpen}/>
           ))}
       </div>
     </div>
   );
 }
 
-function FeedList({setIsLoginDialogOpen}: IDataList) {
+function FeedList({setIsLoginDialogOpen}: Readonly<IDataList>) {
   const [feeds, setFeeds] = useState<IMainFeedsList>(
     {feedSearchResponses: [], size: 0, hasNextSlice: false});
 

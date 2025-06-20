@@ -2,7 +2,7 @@ import {useEffect, useRef, useState} from 'react';
 import UserImage from './UserImage.tsx';
 import TierSvg from './svgs/Tier/TierSvg.tsx';
 import useUserInfo from '@hooks/useUserInfo.ts';
-import useRevInfScroll4Widget from '@hooks/useRevInfScroll4Widget.ts';
+import useRevInfScroll4Widget from '@hooks/infScroll/useRevInfScroll4Widget.ts';
 import {IChattingMessage, IChattingRoom} from '@constant/interfaces.ts';
 import authControl from '@constant/authControl.ts';
 

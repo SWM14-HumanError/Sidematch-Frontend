@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import AdminNavigation from '@components/navigation/AdminNavigation.tsx';
 import {IDeviconJson} from '@constant/interfaces.ts';
-import StackList from '@constant/stackList.ts';
+import {useStacks} from '@constant/stackList.ts';
 import '@styles/pages/CreateStackImagePage.scss';
 
 interface IKoNamesJson {
@@ -15,6 +15,9 @@ function CreateStackImagePage() {
   const [stackList, setStackList] = useState<string>('');
   const [stackKoreanList, setStackKoreanList] = useState<string>('');
   const [stackKoAddedList, setStackKoAddedList] = useState<string>('');
+
+  const {data} = useStacks();
+  const StackList = data || [];
 
   // stackInfoList를 변환하여 stackList로 변환합니다.
   useEffect(() => {
@@ -54,7 +57,7 @@ function CreateStackImagePage() {
         altnames: stack.altnames
           .map((altname) => altname.toLowerCase())
           .filter((altname) => altname !== stack.tagName),
-        koNames: []
+        koNames: [] as string[],
       }))];
 
       // stackKoreanList에 있는 한글 이름을 추가합니다.
@@ -64,7 +67,6 @@ function CreateStackImagePage() {
         if (index !== -1) {
 
           // 영어로만 이루어진 이름이 존재하면, 그 영어를 소문자로 바꾸고 tagName과 altNames와 비교해서 같은 것이 있으면, 그 이름을 제외하고 추가한다.
-          // @ts-ignore
           stacks[index].koNames = stack.koNames.filter((koName) => {
             if (/^[a-zA-Z0-9\s]+$/.test(koName)) {
               const koNameLower = koName.toLowerCase();
@@ -110,7 +112,7 @@ function CreateStackImagePage() {
         <ul className='tech_layout'>
           {notExistStacks.length ?
             notExistStacks.map((stack, index) => (
-              <li key={index}>{stack}</li>
+              <li key={stack + index}>{stack}</li>
             )) : (
               <li>없음</li>
             )}
@@ -121,8 +123,8 @@ function CreateStackImagePage() {
           <p>{StackList.length}개의 스택 이미지 목록</p>
         </div>
         <ul className='tech_layout'>
-          {StackList.map((stack, index) => (
-            <li key={index}>
+          {StackList.map((stack) => (
+            <li key={stack.tagName}>
               <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${stack.tagName}/${stack.tagName}-${stack.svg}.svg`} alt={stack.tagName}
                    onError={() => setNotExistStacks(prev => [...prev, stack.tagName])}/>
             </li>
@@ -131,8 +133,8 @@ function CreateStackImagePage() {
 
         <h2>스택 리스트 생성기</h2>
         <p>
-          <a href='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.json' target='_blank'>devicon.json</a>
-          파일을 붙여넣어서 스택 리스트를 생성합니다.
+          <a href='https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.json' target='_blank'>devicon.json</a>{/*
+          */}파일을 붙여넣어서 스택 리스트를 생성합니다.
         </p>
         <textarea name='' id=''
                   cols={50} rows={10}

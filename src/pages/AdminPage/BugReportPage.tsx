@@ -1,8 +1,9 @@
 import {useEffect, useRef} from 'react';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import AdminNavigation from '@components/navigation/AdminNavigation.tsx';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
+import {InquiryAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
 import {IInquiry, IInquiryList} from '@constant/interfaces.ts';
-import {InquiryAdapter} from '@constant/InfScrollAdapter.ts';
 
 const ThList = ['생성일', '내용'];
 
@@ -12,9 +13,9 @@ function BugReportPage() {
   // });
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new InquiryAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty}
-    = useInfScroll<IInquiryList, IInquiry>(adapter.current, infScrollLayout);
+    = useInfScroll<IInquiryList, IInquiry>(new InquiryAdapter(), trigger);
 
   useEffect(() => {
     document.body.style.overflow = 'auto';

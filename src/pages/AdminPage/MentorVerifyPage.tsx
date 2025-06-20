@@ -1,9 +1,10 @@
 import {useEffect, useRef, useState} from 'react';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import AdminMentorDenyVerify from '@components/dialogLayout/ApplySimpleContentsDialog.tsx';
 import AdminNavigation from '@components/navigation/AdminNavigation.tsx';
 import {IMentorVerify, IMentorVerifyList} from '@constant/interfaces.ts';
-import {MentorVerifyAdapter} from '@constant/InfScrollAdapter.ts';
+import {MentorVerifyAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
 import Api from '@constant/Api.ts';
 
 import '@styles/MainProjectPage.scss';
@@ -17,9 +18,9 @@ function MentorVerifyPage() {
   const [denyVerifyFunc, setDenyVerifyFunc] = useState<(comment:string)=>void>((_: string) => {});
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new MentorVerifyAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty}
-    = useInfScroll<IMentorVerifyList, IMentorVerify>(adapter.current, infScrollLayout);
+    = useInfScroll<IMentorVerifyList, IMentorVerify>(new MentorVerifyAdapter(), trigger);
 
   useEffect(() => {
     document.body.style.overflow = 'auto';

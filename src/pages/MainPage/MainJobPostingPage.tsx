@@ -7,11 +7,12 @@ import LoadingComponent from '@components/LoadingComponent.tsx';
 import JobPostingCard from '@components/cards/JobPostingCard.tsx';
 import LoginRecommendDialog from '@components/dialogLayout/LoginRecommendDialog.tsx';
 import Footer from '@components/Footer.tsx';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
 import {IJobPosting, IJobPostingList} from '@constant/interfaces.ts';
 import {JobPositionOptions, JobTypeOptions} from '@constant/selectOptions.ts';
-import {JobPostingAdapter} from '@constant/InfScrollAdapter.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
+import {JobPostingAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
 import authControl from '@constant/authControl.ts';
 import '@styles/MainProjectPage.scss';
 
@@ -23,9 +24,9 @@ function MainJobPostingPage() {
   const [hideClosedJob, setHideClosedJob] = useState<boolean>(false);
   const infScrollLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new JobPostingAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEmpty, isEnded, setReqParams}
-    = useInfScroll<IJobPostingList, IJobPosting>(adapter.current, infScrollLayout);
+    = useInfScroll<IJobPostingList, IJobPosting>(new JobPostingAdapter(), trigger);
 
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState<boolean>(false);
   const isMobile = useWindowSizeStore(state => state.isMobile);

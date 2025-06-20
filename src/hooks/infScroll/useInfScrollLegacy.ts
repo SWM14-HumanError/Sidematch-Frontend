@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {InfScrollAdapter} from '@constant/InfScrollAdapter.ts';
+import {InfScrollAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
 import {InfList, SearchParams} from '@constant/interfaces.ts';
-import InfScroll from '@constant/InfScroll.ts';
+import InfScroll from '@constant/infScroll/InfScroll.ts';
 import Api from '@constant/Api.ts';
 
 const InitialData = {
@@ -53,12 +53,11 @@ function useInfScroll<U, T>(
     const componentHeight = infScrollLayout?.current?.clientHeight;
     const scrollThreshold = 32;
 
-    // console.log(scrolledHeight + windowHeight + scrollThreshold, documentHeight);
-
     if (scrolledHeight + windowHeight + scrollThreshold >= documentHeight ||
       componentHeight && componentHeight < windowHeight) {
-      if (!loading)
+      if (!loading) {
         loadMoreData().then();
+      }
     }
   };
 

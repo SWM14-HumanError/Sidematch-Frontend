@@ -8,18 +8,19 @@ import Search from '@components/svgs/Search.tsx';
 import MentorDialog from '@components/dialogLayout/MentorDialog.tsx';
 import LoadingComponent from '@components/LoadingComponent.tsx';
 import LoginRecommendDialog from '@components/dialogLayout/LoginRecommendDialog.tsx';
+import UserCard from '@components/cards/UserCard.tsx';
 import Footer from '@components/Footer.tsx';
 import useMentoringPopup from '@hooks/useMentoringPopup.ts';
-import useInfScroll from '@hooks/useInfScroll.ts';
+import useInfScroll from '@hooks/infScroll/useInfScroll.ts';
 import useWindowSizeStore from '@/stores/useWindowSizeStore.ts';
-import {TechTypeOptions} from '@constant/selectOptions.ts';
+import {useMainScrollTrigger} from '@constant/infScroll/useScrollTrigger.ts';
 import {IMainMentorList, IMentoring, IUser, IUserCardList, SearchParams} from '@constant/interfaces.ts';
-import {MenteeAdapter, MentorAdapter} from '@constant/InfScrollAdapter.ts';
+import {MenteeAdapter, MentorAdapter} from '@constant/infScroll/InfScrollAdapter.ts';
+import {TechTypeOptions} from '@constant/selectOptions.ts';
 import authControl from '@constant/authControl.ts';
 
 import '@styles/MainProjectPage.scss';
 import '@styles/MainMentorPage.scss';
-import UserCard from '@components/cards/UserCard.tsx';
 
 const SearchTypeOptions = [
   {option: '제목+내용', value: 'TITLE_AND_CONTENT'},
@@ -31,13 +32,13 @@ function MainMentorPage() {
   const infScrollLayout = useRef<HTMLDivElement>(null);
   const infScrollMentorLayout = useRef<HTMLDivElement>(null);
 
-  const adapter = useRef(new MentorAdapter());
+  const trigger = useMainScrollTrigger(infScrollLayout);
   const {data, loading, isEnded, isEmpty, setReqParams, hideData}
-    = useInfScroll<IMainMentorList, IMentoring>(adapter.current, infScrollLayout);
+    = useInfScroll<IMainMentorList, IMentoring>(new MentorAdapter(), trigger);
 
-  const mentorAdapter = useRef(new MenteeAdapter());
+  const trigger2 = useMainScrollTrigger(infScrollLayout);
   const {data: mentorData, loading: mentorLoading, isEmpty: mentorIsEmpty}
-    = useInfScroll<IUserCardList, IUser>(mentorAdapter.current, infScrollMentorLayout);
+    = useInfScroll<IUserCardList, IUser>(new MenteeAdapter(), trigger2);
 
   const mentoringPopup = useMentoringPopup(data.list as IMentoring[]);
 
